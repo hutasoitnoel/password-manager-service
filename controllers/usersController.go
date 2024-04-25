@@ -3,13 +3,16 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
+	"time"
 
 	config "password-manager-service/initializers"
 	"password-manager-service/models"
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -74,9 +77,29 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": user.ID,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	if err != nil {
+		c.IndentedJSON(
+			http.StatusInternalServerError,
+			gin.H{"message": fmt.Sprintf("Error creating token: %v", err)},
+		)
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
+
 	c.IndentedJSON(
 		http.StatusOK,
-		user,
+		gin.H{
+			"data":  user,
+			"token": tokenString,
+		},
 	)
 }
 

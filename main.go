@@ -1,8 +1,10 @@
 package main
 
 import (
+	"net/http"
 	"password-manager-service/controllers"
 	config "password-manager-service/initializers"
+	"password-manager-service/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,6 +12,12 @@ import (
 func init() {
 	config.LoadEnv()
 	config.ConnectDB()
+}
+
+func validateToken(c *gin.Context) {
+	user, _ := c.Get("user")
+
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "I am logged in!", "user": user})
 }
 
 func main() {
@@ -25,6 +33,8 @@ func main() {
 	router.POST("/login", controllers.LoginUser)
 
 	router.POST("/passwords", controllers.CreateCredential)
+
+	router.GET("/validate", middlewares.RequireAuthorization, validateToken)
 
 	router.Run(":8080")
 }
