@@ -26,14 +26,15 @@ func main() {
 	router.GET("/ping", controllers.Ping)
 	router.GET("/users", controllers.FindAllUsers)
 	router.GET("/users/:id", controllers.FindUserById)
-	router.GET("/passwords", controllers.FindAllCredentials)
-	router.GET("/passwords/:user_id", controllers.FindCredentialsByUserId)
+	router.GET("/all-passwords", controllers.FindAllCredentials)
 
 	router.POST("/register", controllers.RegisterUser)
 	router.POST("/login", controllers.LoginUser)
 
 	router.POST("/passwords", controllers.CreateCredential)
 
+	// Authorized endpoints
+	router.GET("/passwords", middlewares.RequireAuthorization, controllers.FindCredentialsByUserId)
 	router.GET("/validate", middlewares.RequireAuthorization, validateToken)
 
 	router.Run(":8080")

@@ -5,7 +5,6 @@ import (
 	"net/http"
 	config "password-manager-service/initializers"
 	"password-manager-service/models"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,17 +25,16 @@ func FindAllCredentials(c *gin.Context) {
 }
 
 func FindCredentialsByUserId(c *gin.Context) {
-	userIdUint, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
-	if err != nil {
-		c.IndentedJSON(
-			http.StatusNotFound,
-			gin.H{"message": fmt.Sprintf("Error parsing id: %v", err)},
+	user, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			gin.H{"message": "Please log in"},
 		)
-		return
 	}
 
 	var credentials []models.Credential
-	if err := config.DB.Where("user_id = ?", uint(userIdUint)).Find(&credentials).Error; err != nil {
+	if err := config.DB.Where("user_id = ?", user.(models.User).ID).Find(&credentials).Error; err != nil {
 		c.IndentedJSON(
 			http.StatusNotFound,
 			gin.H{"message": fmt.Sprintf("Error fetching credentials: %v", err)},
