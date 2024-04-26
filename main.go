@@ -31,10 +31,9 @@ func main() {
 	router.POST("/register", controllers.RegisterUser)
 	router.POST("/login", controllers.LoginUser)
 
-	router.POST("/passwords", controllers.CreateCredential)
-
 	// Authorized endpoints
 	router.GET("/passwords", middlewares.RequireAuthorization, controllers.FindCredentialsByUserId)
+	router.POST("/passwords", middlewares.RequireAuthorization, controllers.CreateCredential)
 	router.GET("/validate", middlewares.RequireAuthorization, validateToken)
 
 	router.Run(":8080")

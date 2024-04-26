@@ -49,6 +49,14 @@ func FindCredentialsByUserId(c *gin.Context) {
 }
 
 func CreateCredential(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(
+			http.StatusUnauthorized,
+			gin.H{"message": "Please log in"},
+		)
+	}
+
 	var credential models.Credential
 	if err := c.ShouldBindJSON(&credential); err != nil {
 		c.IndentedJSON(
@@ -57,6 +65,8 @@ func CreateCredential(c *gin.Context) {
 		)
 		return
 	}
+
+	credential.UserId = user.(models.User).ID
 
 	if err := config.DB.Create(&credential).Error; err != nil {
 		c.IndentedJSON(
