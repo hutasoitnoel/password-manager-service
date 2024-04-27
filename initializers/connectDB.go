@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"password-manager-service/models"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -26,4 +27,8 @@ func ConnectDB() {
 	}
 
 	DB = database
+
+	if err := DB.AutoMigrate(&models.User{}, &models.Credential{}); err != nil {
+		log.Fatalf("Error migrating database: %v", err)
+	}
 }
