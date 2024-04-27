@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"password-manager-service/controllers"
 	config "password-manager-service/initializers"
@@ -24,10 +25,13 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/ping", controllers.Ping)
+
+	// Super user endpoints
 	router.GET("/users", controllers.FindAllUsers)
 	router.GET("/users/:id", controllers.FindUserById)
 	router.GET("/all-passwords", controllers.FindAllCredentials)
 
+	// Client endpoints
 	router.POST("/register", controllers.RegisterUser)
 	router.POST("/login", controllers.LoginUser)
 
@@ -36,5 +40,6 @@ func main() {
 	router.POST("/passwords", middlewares.RequireAuthorization, controllers.CreateCredential)
 	router.GET("/validate", middlewares.RequireAuthorization, validateToken)
 
+	fmt.Println("Running on port: 8080")
 	router.Run(":8080")
 }
