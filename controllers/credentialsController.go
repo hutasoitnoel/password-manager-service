@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"password-manager-service/helpers"
 	config "password-manager-service/initializers"
 	"password-manager-service/models"
 
@@ -67,6 +68,14 @@ func CreateCredential(c *gin.Context) {
 	}
 
 	credential.UserId = user.(models.User).ID
+
+	if err := helpers.Validator.Struct(credential); err != nil {
+		c.IndentedJSON(
+			http.StatusInternalServerError,
+			gin.H{"message": fmt.Sprintf("Error missing payload: %v", err)},
+		)
+		return
+	}
 
 	if err := config.DB.Create(&credential).Error; err != nil {
 		c.IndentedJSON(

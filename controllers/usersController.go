@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"password-manager-service/helpers"
 	config "password-manager-service/initializers"
 	"password-manager-service/models"
 
@@ -22,6 +23,14 @@ func RegisterUser(c *gin.Context) {
 		c.IndentedJSON(
 			http.StatusBadRequest,
 			gin.H{"message": fmt.Sprintf("Error binding JSON: %v", err)},
+		)
+		return
+	}
+
+	if err := helpers.Validator.Struct(payload); err != nil {
+		c.IndentedJSON(
+			http.StatusBadRequest,
+			gin.H{"message": fmt.Sprintf("Error missing payload: %v", err)},
 		)
 		return
 	}
@@ -56,6 +65,14 @@ func LoginUser(c *gin.Context) {
 		c.IndentedJSON(
 			http.StatusBadRequest,
 			gin.H{"message": fmt.Sprintf("Error binding JSON: %v", err)},
+		)
+		return
+	}
+
+	if err := helpers.Validator.Struct(payload); err != nil {
+		c.IndentedJSON(
+			http.StatusBadRequest,
+			gin.H{"message": fmt.Sprintf("Error missing payload: %v", err)},
 		)
 		return
 	}
