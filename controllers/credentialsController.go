@@ -92,6 +92,38 @@ func CreateCredential(c *gin.Context) {
 }
 
 func UpdateCredential(c *gin.Context) {
+	credentialId := c.Param("credential_id")
+
+	var payload models.Credential
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"message": fmt.Sprintf("Error binding JSON: %v", err)},
+		)
+		return
+	}
+
+	var credential models.Credential
+	if err := config.DB.Find(&credential, credentialId).Error; err != nil {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"message": fmt.Sprintf("Error finding credential: %v", err)},
+		)
+		return
+	}
+
+	if err := config.DB.Model(&credential).Updates(&payload).Error; err != nil {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"message": fmt.Sprintf("Error updating record: %v", err)},
+		)
+		return
+	}
+
+	c.IndentedJSON(
+		http.StatusOK,
+		credential,
+	)
 }
 
 func DeleteCredential(c *gin.Context) {
