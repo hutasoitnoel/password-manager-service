@@ -90,3 +90,23 @@ func CreateCredential(c *gin.Context) {
 		credential,
 	)
 }
+
+func UpdateCredential(c *gin.Context) {
+}
+
+func DeleteCredential(c *gin.Context) {
+	credentialId := c.Param("credential_id")
+
+	if err := config.DB.Delete(&models.Credential{}, credentialId).Error; err != nil {
+		c.IndentedJSON(
+			http.StatusInternalServerError,
+			gin.H{"message": fmt.Sprintf("Error deleting credential ID: %v", err)},
+		)
+		return
+	}
+
+	c.IndentedJSON(
+		http.StatusOK,
+		gin.H{"message": fmt.Sprintf("Successfully deleted credential ID: %v", credentialId)},
+	)
+}
