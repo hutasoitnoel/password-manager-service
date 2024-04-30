@@ -17,6 +17,24 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func CheckAuthentication(c *gin.Context) {
+	_, err := c.Cookie("Authorization")
+	if err != nil {
+		fmt.Println("Error mas")
+		fmt.Sprintln(err)
+		c.IndentedJSON(
+			http.StatusUnauthorized,
+			gin.H{"logged_in": false},
+		)
+		return
+	}
+
+	c.IndentedJSON(
+		http.StatusOK,
+		gin.H{"logged_in": true},
+	)
+}
+
 func RegisterUser(c *gin.Context) {
 	var payload models.User
 	if err := c.ShouldBindJSON(&payload); err != nil {
@@ -153,4 +171,21 @@ func FindUserById(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, user)
+}
+
+func DeleteUserById(c *gin.Context) {
+	userId := c.Param("user_id")
+
+	if err := config.DB.Delete(&models.User{}, userId).Error; err != nil {
+		c.IndentedJSON(
+			http.StatusInternalServerError,
+			gin.H{"message": fmt.Sprintf("Error deleting user ID: %v", err)},
+		)
+		return
+	}
+
+	c.IndentedJSON(
+		http.StatusOK,
+		gin.H{"message": fmt.Sprintf("Successfully deleted user ID: %v", userId)},
+	)
 }

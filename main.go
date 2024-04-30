@@ -20,14 +20,15 @@ func main() {
 
 	// Test endpoints
 	router.GET("/ping", controllers.Ping)
-	router.GET("/validate", middlewares.RequireAuthorization, controllers.ValidateToken)
 
 	// Super user endpoints
 	router.GET("/users", controllers.FindAllUsers)
 	router.GET("/users/:id", controllers.FindUserById)
 	router.GET("/all-passwords", controllers.FindAllCredentials)
+	router.DELETE("/users/:user_id", controllers.DeleteUserById)
 
 	// Client endpoints
+	router.GET("/check-auth", controllers.CheckAuthentication)
 	router.POST("/register", controllers.RegisterUser)
 	router.POST("/login", controllers.LoginUser)
 

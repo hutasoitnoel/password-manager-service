@@ -12,9 +12,3 @@ func Ping(c *gin.Context) {
 		gin.H{"message": "Pong!"},
 	)
 }
-
-func ValidateToken(c *gin.Context) {
-	user, _ := c.Get("user")
-
-	c.IndentedJSON(http.StatusOK, gin.H{"message": "I am logged in!", "user": user})
-}
