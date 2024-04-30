@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"password-manager-service/controllers"
 	config "password-manager-service/initializers"
@@ -15,18 +15,12 @@ func init() {
 	config.ConnectDB()
 }
 
-func validateToken(c *gin.Context) {
-	user, _ := c.Get("user")
-
-	c.IndentedJSON(http.StatusOK, gin.H{"message": "I am logged in!", "user": user})
-}
-
 func main() {
 	router := gin.Default()
 
 	// Test endpoints
 	router.GET("/ping", controllers.Ping)
-	router.GET("/validate", middlewares.RequireAuthorization, validateToken)
+	router.GET("/validate", middlewares.RequireAuthorization, controllers.ValidateToken)
 
 	// Super user endpoints
 	router.GET("/users", controllers.FindAllUsers)
@@ -43,6 +37,5 @@ func main() {
 	router.PATCH("/passwords/:credential_id", middlewares.RequireAuthorization, controllers.UpdateCredential)
 	router.DELETE("/passwords/:credential_id", middlewares.RequireAuthorization, controllers.DeleteCredential)
 
-	fmt.Println("Running on port: 8080")
-	router.Run(":8080")
+	log.Fatal((http.ListenAndServe(":8080", middlewares.HandleCors(router))))
 }
