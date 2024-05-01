@@ -20,8 +20,6 @@ import (
 func CheckAuthentication(c *gin.Context) {
 	_, err := c.Cookie("Authorization")
 	if err != nil {
-		fmt.Println("Error mas")
-		fmt.Sprintln(err)
 		c.IndentedJSON(
 			http.StatusUnauthorized,
 			gin.H{"logged_in": false},
