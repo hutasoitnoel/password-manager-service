@@ -125,7 +125,7 @@ func LoginUser(c *gin.Context) {
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
+	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "/", false, true)
 
 	c.IndentedJSON(
 		http.StatusOK,
