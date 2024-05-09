@@ -35,7 +35,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           ls
-          run: scp -i ${{ secrets.SSH_PRIVATE_KEY }} password-manager-service ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/password-manager-service-build
+          run: scp -i "${{ secrets.SSH_PRIVATE_KEY }}" password-manager-service ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/password-manager-service-build
 
     - name: Run app
       uses: appleboy/ssh-action@master
