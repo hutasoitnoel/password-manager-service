@@ -28,14 +28,7 @@ jobs:
       run: ls
 
     - name: Copy file to VM
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.VM_IP }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          ls
-          run: scp -i "${{ secrets.SSH_PRIVATE_KEY }}" password-manager-service ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/password-manager-service-build
+      run: scp -i "${{ secrets.SSH_PRIVATE_KEY }}" password-manager-service ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/password-manager-service-build
 
     - name: Run app
       uses: appleboy/ssh-action@master
