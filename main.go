@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"password-manager-service/controllers"
@@ -17,6 +18,8 @@ func init() {
 
 func main() {
 	router := gin.Default()
+
+	fmt.Println("Boop")
 
 	// Test endpoints
 	router.GET("/ping", controllers.Ping)
