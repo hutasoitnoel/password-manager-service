@@ -3,14 +3,15 @@ name: Deploy to Production
 on:
   push:
     branches:
-      - master  # Trigger deployment on pushes to the main branch
+      - master
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest  # Specify the runner environment
+    runs-on: ubuntu-latest
+    name: Testing github actions
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2  # Checks out your repository under $GITHUB_WORKSPACE
+      uses: actions/checkout@v4
 
     - name: Set up SSH connection
       uses: appleboy/ssh-action@master
