@@ -17,6 +17,9 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: 1.21.0 
+    
+    - name: Kill app process
+      run: kill $(ps aux | grep './password-manager-service' | grep -v grep | awk '{print $2}')
 
     - name: Run app
       uses: appleboy/ssh-action@master
