@@ -19,7 +19,7 @@ func init() {
 func main() {
 	router := gin.Default()
 
-	fmt.Println("Boop")
+	fmt.Println("poom")
 
 	// Test endpoints
 	router.GET("/ping", controllers.Ping)
