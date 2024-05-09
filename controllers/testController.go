@@ -9,6 +9,6 @@ import (
 func Ping(c *gin.Context) {
 	c.IndentedJSON(
 		http.StatusOK,
-		gin.H{"message": "Pong!"},
+		gin.H{"message": "Poof puff pop!"},
 	)
 }
