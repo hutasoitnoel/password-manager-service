@@ -10,17 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Testing github actions
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: 1.21.0 
-    
-    - name: Kill app process
-      run: kill $(ps aux | grep './password-manager-service' | grep -v grep | awk '{print $2}')
-
     - name: Run app
       uses: appleboy/ssh-action@master
       with:
@@ -28,6 +17,7 @@ jobs:
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
+          kill $(ps aux | grep './password-manager-service' | grep -v grep | awk '{print $2}')
           cd github-repos
           cd password-manager-service
           git pull
