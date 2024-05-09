@@ -21,23 +21,8 @@ jobs:
     - name: Build application
       run: go build
 
-    - name: Testing
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.VM_IP }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          ls
-
-    - name: Copy files to VM
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.VM_IP }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "password-manager-service"
-        target: "/password-manager-service-build"
+    - name: Copy file to VM
+      run: scp -i ${{ secrets.SSH_PRIVATE_KEY }} password-manager-service ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/password-manager-service-build
 
     - name: Run app
       uses: appleboy/ssh-action@master
