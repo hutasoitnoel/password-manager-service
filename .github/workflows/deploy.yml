@@ -27,15 +27,6 @@ jobs:
     - name: See
       run: ls
 
-    - name: Copy file to VM
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.VM_IP }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          scp -i "${{ secrets.SSH_PRIVATE_KEY }}" password-manager-service ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}:/password-manager-service-build
-    
     - name: Run app
       uses: appleboy/ssh-action@master
       with:
@@ -43,6 +34,9 @@ jobs:
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd password-manager-service-build
+          cd github-repos
+          cd password-manager-service
+          git pull
+          go build
           ./password-manager-service
 
