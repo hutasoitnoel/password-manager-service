@@ -25,11 +25,8 @@ jobs:
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          ls
           cd github-repos
-          ls
           cd password-manager-service
-          ls
           git pull
 
     - name: Build and run
@@ -39,6 +36,6 @@ jobs:
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          go build
+          /home/linuxbrew/.linuxbrew/opt/go@1.21/bin/go build
           ./password-manager-service
 
