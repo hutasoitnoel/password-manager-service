@@ -28,15 +28,6 @@ jobs:
           cd github-repos
           cd password-manager-service
           git pull
-
-    - name: Build and run
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.VM_IP }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          ls
           /home/linuxbrew/.linuxbrew/opt/go@1.21/bin/go build
           ./password-manager-service
 
