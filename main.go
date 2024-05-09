@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"password-manager-service/controllers"
@@ -18,8 +17,6 @@ func init() {
 
 func main() {
 	router := gin.Default()
-
-	fmt.Println("Test github action")
 
 	// Test endpoints
 	router.GET("/ping", controllers.Ping)
