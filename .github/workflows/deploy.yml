@@ -13,19 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.21.0 
-
-    - name: Build application
-      run: go build
-
-    - name: Install SSH client
-      run: sudo apt-get update && sudo apt-get install -y openssh-client
-    
-    - name: See
-      run: ls
 
     - name: Run app
       uses: appleboy/ssh-action@master
@@ -34,8 +21,11 @@ jobs:
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
+          ls
           cd github-repos
+          ls
           cd password-manager-service
+          ls
           git pull
           go build
           ./password-manager-service
