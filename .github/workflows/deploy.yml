@@ -13,7 +13,7 @@ jobs:
     name: Testing github actions
     steps:
     - name: Run app
-      uses: appleboy/ssh-action@v0.1.3
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
