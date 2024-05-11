@@ -29,10 +29,10 @@ jobs:
           echo "DEVELOPMENT_UI_URL=${{ secrets.DEVELOPMENT_UI_URL }}" >> $GITHUB_ENV
 
       - name: Create directory
-        uses: mkdir build-folder
+        run: mkdir build-folder
 
       - name: Build go app
-        uses: go build -o build-folder
+        run: go build -o build-folder
 
       - name: Push
         uses: s0/git-publish-subdir-action@develop
