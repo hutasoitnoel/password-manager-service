@@ -18,21 +18,22 @@ jobs:
         with:
           go-version: '1.21.0'
 
-      - name: Set Environment Variables
-        run: |
-          echo "APP_ENV=${{ secrets.APP_ENV }}" >> $GITHUB_ENV
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
-          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
-          echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
-          echo "DEVELOPMENT_UI_URL=${{ secrets.DEVELOPMENT_UI_URL }}" >> $GITHUB_ENV
-
       - name: Create directory
         run: mkdir build-folder
 
       - name: Build go app
         run: go build -o build-folder
+
+      - name: Set Environment Variables
+        run: |
+          cd build-folder
+          echo "APP_ENV=${{ secrets.APP_ENV }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "DEVELOPMENT_UI_URL=${{ secrets.DEVELOPMENT_UI_URL }}" >> .env
 
       - name: Push
         uses: s0/git-publish-subdir-action@develop
