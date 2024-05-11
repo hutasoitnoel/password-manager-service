@@ -1,0 +1,28 @@
+
+
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Testing github actions
+    steps:
+    - name: Run app
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VM_IP }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          kill $(ps aux | grep './password-manager-service' | grep -v grep | awk '{print $2}')
+          cd github-repos
+          cd password-manager-service
+          git pull
+          /home/linuxbrew/.linuxbrew/opt/go@1.21/bin/go build
+          nohup ./password-manager-service >/dev/null 2>&1 &
+

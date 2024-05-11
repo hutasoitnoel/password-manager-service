@@ -1,4 +1,4 @@
-name: Deploy to Production
+name: Generate a build and push to "build" branch
 
 on:
   push:
@@ -6,21 +6,39 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    name: Testing github actions
+    name: Deploy to hostinger
     steps:
-    - name: Run app
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.VM_IP }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          kill $(ps aux | grep './password-manager-service' | grep -v grep | awk '{print $2}')
-          cd github-repos
-          cd password-manager-service
-          git pull
-          /home/linuxbrew/.linuxbrew/opt/go@1.21/bin/go build
-          nohup ./password-manager-service >/dev/null 2>&1 &
+      - name: git-checkout
+        uses: actions/checkout@v4
 
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.0'
+
+      - name: Set Environment Variables
+        run: |
+          echo "APP_ENV=${{ secrets.APP_ENV }}" >> $GITHUB_ENV
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
+          echo "DEVELOPMENT_UI_URL=${{ secrets.DEVELOPMENT_UI_URL }}" >> $GITHUB_ENV
+
+      - name: Create directory
+        uses: mkdir build-folder
+
+      - name: Build go app
+        uses: go build -o build-folder
+
+      - name: Push
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: build
+          FOLDER: build-folder
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Build: ({sha}) {msg}"
