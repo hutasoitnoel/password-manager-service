@@ -43,3 +43,22 @@ jobs:
           FOLDER: build-folder
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"
+
+      - name: Run app
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            kill $(ps aux | grep './password-manager-service' | grep -v grep | awk '{print $2}')
+            cd builds/password-manager-service
+            git pull
+            echo "APP_ENV=${{ secrets.APP_ENV }}" >> .env
+            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "DEVELOPMENT_UI_URL=${{ secrets.DEVELOPMENT_UI_URL }}" >> .env
+            nohup ./password-manager-service >/dev/null 2>&1 &
