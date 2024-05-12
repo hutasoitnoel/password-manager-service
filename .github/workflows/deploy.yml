@@ -1,5 +1,3 @@
-
-
 name: Deploy to Production
 
 on:
@@ -19,4 +17,9 @@ jobs:
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          ls
+          kill $(ps aux | grep './password-manager-service' | grep -v grep | awk '{print $2}')
+          cd github-repos
+          cd password-manager-service
+          git pull
+          /home/linuxbrew/.linuxbrew/opt/go@1.21/bin/go build
+          nohup ./password-manager-service >/dev/null 2>&1 &
