@@ -16,7 +16,7 @@ jobs:
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.PORT }}
+        port: 22
         script: |
           kill $(ps aux | grep './password-manager-service' | grep -v grep | awk '{print $2}')
           cd github-repos
