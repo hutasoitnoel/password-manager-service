@@ -30,7 +30,8 @@ func main() {
 	// Client endpoints
 	router.GET("/check-auth", controllers.CheckAuthentication)
 	router.POST("/register", controllers.RegisterUser)
-	router.POST("/login", controllers.LoginUser)
+	router.POST("/login", controllers.Login)
+	router.POST("/logout", controllers.Logout)
 
 	// Authorized endpoints
 	router.GET("/passwords", middlewares.RequireAuthorization, controllers.FindCredentialsByUserId)

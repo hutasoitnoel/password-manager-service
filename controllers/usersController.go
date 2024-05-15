@@ -75,7 +75,7 @@ func RegisterUser(c *gin.Context) {
 	)
 }
 
-func LoginUser(c *gin.Context) {
+func Login(c *gin.Context) {
 	var payload models.User
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.IndentedJSON(
@@ -132,6 +132,17 @@ func LoginUser(c *gin.Context) {
 		gin.H{
 			"data":  user,
 			"token": tokenString,
+		},
+	)
+}
+
+func Logout(c *gin.Context) {
+	c.SetCookie("Authorization", "", -1, "", "/", false, true)
+
+	c.IndentedJSON(
+		http.StatusOK,
+		gin.H{
+			"message": "Logged out!",
 		},
 	)
 }
