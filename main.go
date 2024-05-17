@@ -32,6 +32,7 @@ func main() {
 	router.POST("/register", controllers.RegisterUser)
 	router.POST("/login", controllers.Login)
 	router.POST("/logout", controllers.Logout)
+	router.GET("/website-logo", controllers.FindLogoByName)
 
 	// Authorized endpoints
 	router.GET("/passwords", middlewares.RequireAuthorization, controllers.FindCredentialsByUserId)
