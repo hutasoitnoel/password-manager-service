@@ -40,5 +40,10 @@ func main() {
 	router.PATCH("/passwords/:credential_id", middlewares.RequireAuthorization, controllers.UpdateCredential)
 	router.DELETE("/passwords/:credential_id", middlewares.RequireAuthorization, controllers.DeleteCredential)
 
+	router.GET("/savings", middlewares.RequireAuthorization, controllers.FindSavingsByUserId)
+	router.POST("/savings", middlewares.RequireAuthorization, controllers.CreateSaving)
+	router.PATCH("/savings/:saving_id", middlewares.RequireAuthorization, controllers.UpdateSaving)
+	router.DELETE("/savings/:saving_id", middlewares.RequireAuthorization, controllers.DeleteSaving)
+
 	log.Fatal((http.ListenAndServe(":8080", middlewares.HandleCors(router))))
 }
