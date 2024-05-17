@@ -104,10 +104,19 @@ func UpdateCredential(c *gin.Context) {
 	}
 
 	var credential models.Credential
-	if err := config.DB.Find(&credential, credentialId).Error; err != nil {
+	data := config.DB.Find(&credential, credentialId)
+	if data.Error != nil {
 		c.IndentedJSON(
 			http.StatusNotFound,
-			gin.H{"message": fmt.Sprintf("Error finding credential: %v", err)},
+			gin.H{"message": fmt.Sprintf("Error finding credential: %v", data.Error)},
+		)
+		return
+	}
+
+	if data.RowsAffected == 0 {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"message": "Record not found"},
 		)
 		return
 	}
@@ -128,6 +137,24 @@ func UpdateCredential(c *gin.Context) {
 
 func DeleteCredential(c *gin.Context) {
 	credentialId := c.Param("credential_id")
+
+	var credential models.Credential
+	data := config.DB.Find(&credential, credentialId)
+	if data.Error != nil {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"message": fmt.Sprintf("Error finding saving: %v", data.Error)},
+		)
+		return
+	}
+
+	if data.RowsAffected == 0 {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"message": "Record not found"},
+		)
+		return
+	}
 
 	if err := config.DB.Delete(&models.Credential{}, credentialId).Error; err != nil {
 		c.IndentedJSON(

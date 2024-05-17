@@ -89,10 +89,19 @@ func UpdateSaving(c *gin.Context) {
 	}
 
 	var saving models.Saving
-	if err := config.DB.Find(&saving, savingId).Error; err != nil {
+	data := config.DB.Find(&saving, savingId)
+	if data.Error != nil {
 		c.IndentedJSON(
 			http.StatusNotFound,
-			gin.H{"message": fmt.Sprintf("Error finding saving: %v", err)},
+			gin.H{"message": fmt.Sprintf("Error finding saving: %v", data.Error)},
+		)
+		return
+	}
+
+	if data.RowsAffected == 0 {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"message": "Record not found"},
 		)
 		return
 	}
@@ -113,6 +122,24 @@ func UpdateSaving(c *gin.Context) {
 
 func DeleteSaving(c *gin.Context) {
 	savingId := c.Param("saving_id")
+
+	var saving models.Saving
+	data := config.DB.Find(&saving, savingId)
+	if data.Error != nil {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"message": fmt.Sprintf("Error finding saving: %v", data.Error)},
+		)
+		return
+	}
+
+	if data.RowsAffected == 0 {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"message": "Record not found"},
+		)
+		return
+	}
 
 	if err := config.DB.Delete(&models.Saving{}, savingId).Error; err != nil {
 		c.IndentedJSON(
