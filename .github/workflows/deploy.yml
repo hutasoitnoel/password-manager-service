@@ -52,5 +52,6 @@ jobs:
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             echo "DEVELOPMENT_UI_URL=${{ secrets.DEVELOPMENT_UI_URL }}" >> .env
             echo "PRODUCTION_UI_URL=${{ secrets.PRODUCTION_UI_URL }}" >> .env
+            echo "PROXY_UI_URL=${{ secrets.PROXY_UI_URL }}" >> .env
             echo "API_NINJA_API_KEY=${{ secrets.API_NINJA_API_KEY}}" >> .env
             nohup ./password-manager-service >/dev/null 2>&1 &
