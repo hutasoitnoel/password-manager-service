@@ -30,8 +30,8 @@ func FindLogoByName(c *gin.Context) {
 
 	if len(strings.Fields(websiteName)) > 1 {
 		c.IndentedJSON(
-			http.StatusBadRequest,
-			gin.H{"message": "only single words are allowed"},
+			http.StatusOK,
+			gin.H{"message": "Website name not found"},
 		)
 		return
 	}
