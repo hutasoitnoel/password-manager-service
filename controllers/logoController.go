@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +24,14 @@ func FindLogoByName(c *gin.Context) {
 		c.IndentedJSON(
 			http.StatusBadRequest,
 			gin.H{"message": "name query parameter is required"},
+		)
+		return
+	}
+
+	if len(strings.Fields(websiteName)) > 1 {
+		c.IndentedJSON(
+			http.StatusBadRequest,
+			gin.H{"message": "only single words are allowed"},
 		)
 		return
 	}
