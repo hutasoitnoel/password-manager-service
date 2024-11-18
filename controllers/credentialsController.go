@@ -32,9 +32,11 @@ func FindCredentialsByUserId(c *gin.Context) {
 			http.StatusUnauthorized,
 			gin.H{"message": "Please log in"},
 		)
+		return
 	}
 
 	var credentials []models.Credential
+	// Fetch user's credentials
 	if err := config.DB.Where("user_id = ?", user.(models.User).ID).Find(&credentials).Error; err != nil {
 		c.IndentedJSON(
 			http.StatusNotFound,
@@ -43,6 +45,20 @@ func FindCredentialsByUserId(c *gin.Context) {
 		return
 	}
 
+	// Decrypt password
+	for i := range credentials {
+		decryptedPassword, err := helpers.Decrypt(credentials[i].Password)
+		if err != nil {
+			c.IndentedJSON(
+				http.StatusInternalServerError,
+				gin.H{"message": fmt.Sprintf("Error decrypting credentials: %v", err)},
+			)
+			return
+		}
+		credentials[i].Password = decryptedPassword
+	}
+
+	// Return decrypted credentials
 	c.IndentedJSON(
 		http.StatusOK,
 		credentials,
@@ -56,6 +72,7 @@ func CreateCredential(c *gin.Context) {
 			http.StatusUnauthorized,
 			gin.H{"message": "Please log in"},
 		)
+		return
 	}
 
 	var credential models.Credential
@@ -77,6 +94,18 @@ func CreateCredential(c *gin.Context) {
 		return
 	}
 
+	// Encrypt password
+	encryptedPassword, err := helpers.Encrypt(credential.Password)
+	if err != nil {
+		c.IndentedJSON(
+			http.StatusInternalServerError,
+			gin.H{"message": fmt.Sprintf("Error encrypting password: %v", err)},
+		)
+		return
+	}
+	credential.Password = encryptedPassword
+
+	// Save to DB
 	if err := config.DB.Create(&credential).Error; err != nil {
 		c.IndentedJSON(
 			http.StatusInternalServerError,
@@ -120,6 +149,17 @@ func UpdateCredential(c *gin.Context) {
 		)
 		return
 	}
+
+	// Encrypt password
+	encryptedPassword, err := helpers.Encrypt(credential.Password)
+	if err != nil {
+		c.IndentedJSON(
+			http.StatusInternalServerError,
+			gin.H{"message": fmt.Sprintf("Error encrypting password: %v", err)},
+		)
+		return
+	}
+	credential.Password = encryptedPassword
 
 	if err := config.DB.Model(&credential).Updates(&payload).Error; err != nil {
 		c.IndentedJSON(
