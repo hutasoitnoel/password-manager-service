@@ -5,7 +5,7 @@ import (
 	"crypto/cipher"
 	"encoding/base64"
 	"fmt"
-	"password-manager-service/config"
+	"os"
 )
 
 // Decrypt decrypts an AES-encrypted string or returns the plain text if it wasn't encrypted.
@@ -20,10 +20,9 @@ func Decrypt(encryptedText string) (string, error) {
 	}
 
 	fmt.Printf("Decoded cipherText length: %d\n", len(cipherText))
-	fmt.Println(config.ENCRYPTION_KEY)
 
 	// Create AES block cipher
-	block, err := aes.NewCipher(config.ENCRYPTION_KEY)
+	block, err := aes.NewCipher([]byte(os.Getenv("ENCRYPTION_KEY")))
 	if err != nil {
 		return "", err
 	}

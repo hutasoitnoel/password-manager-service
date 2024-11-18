@@ -7,13 +7,12 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"password-manager-service/config"
+	"os"
 )
 
 // Encrypt encrypts a plaintext string using AES.
 func Encrypt(plainText string) (string, error) {
-	fmt.Println("length", len(config.ENCRYPTION_KEY))
-	block, err := aes.NewCipher(config.ENCRYPTION_KEY)
+	block, err := aes.NewCipher([]byte(os.Getenv("ENCRYPTION_KEY")))
 	if err != nil {
 		return "", err
 	}
