@@ -27,6 +27,7 @@ func main() {
 	router.GET("/users", controllers.FindAllUsers)
 	router.GET("/users/:id", controllers.FindUserById)
 	router.GET("/all-passwords", controllers.FindAllCredentials)
+	router.GET("/all-identifications", controllers.FindAllIdentifications)
 	router.DELETE("/users/:user_id", controllers.DeleteUserById)
 
 	// Client endpoints
@@ -41,6 +42,11 @@ func main() {
 	router.POST("/passwords", middlewares.RequireAuthorization, controllers.CreateCredential)
 	router.PATCH("/passwords/:credential_id", middlewares.RequireAuthorization, controllers.UpdateCredential)
 	router.DELETE("/passwords/:credential_id", middlewares.RequireAuthorization, controllers.DeleteCredential)
+
+	router.GET("/identifications", middlewares.RequireAuthorization, controllers.FindIdentificationsByUserId)
+	router.POST("/identifications", middlewares.RequireAuthorization, controllers.CreateIdentification)
+	router.PATCH("/identifications/:identification_id", middlewares.RequireAuthorization, controllers.UpdateIdentification)
+	router.DELETE("/identifications/:identification_id", middlewares.RequireAuthorization, controllers.DeleteIdentification)
 
 	router.GET("/savings", middlewares.RequireAuthorization, controllers.FindSavingsByUserId)
 	router.POST("/savings", middlewares.RequireAuthorization, controllers.CreateSaving)
